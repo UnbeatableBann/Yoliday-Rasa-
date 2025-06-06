@@ -30,7 +30,7 @@
     inputField.value = "";
 
     // Send message to Rasa server
-    const response = await fetch("http://localhost:5005/webhooks/rest/webhook", {
+    const response = await fetch("https://yoliday-rasa.onrender.com/webhooks/rest/webhook", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sender: "user", message: message })
