@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Yoliday Chatbot</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    #chatbox { border: 1px solid #ccc; padding: 10px; height: 400px; overflow-y: scroll; }
+    .user, .bot { margin: 10px 0; }
+    .user { color: blue; }
+    .bot { color: green; }
+  </style>
+</head>
+<body>
+
+<h2>Yoliday Travel Assistant</h2>
+<div id="chatbox"></div>
+
+<input type="text" id="userInput" placeholder="Type your message..." />
+<button onclick="sendMessage()">Send</button>
+
+<script>
+  async function sendMessage() {
+    const inputField = document.getElementById("userInput");
+    const message = inputField.value;
+    if (!message) return;
+
+    // Display user message
+    const chatbox = document.getElementById("chatbox");
+    chatbox.innerHTML += `<div class="user"><strong>You:</strong> ${message}</div>`;
+    inputField.value = "";
+
+    // Send message to Rasa server
+    const response = await fetch("http://localhost:5005/webhooks/rest/webhook", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sender: "user", message: message })
+    });
+
+    const data = await response.json();
+
+    // Display bot responses
+    data.forEach((entry) => {
+      chatbox.innerHTML += `<div class="bot"><strong>Bot:</strong> ${entry.text}</div>`;
+    });
+
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
+</script>
+
+</body>
+</html>
